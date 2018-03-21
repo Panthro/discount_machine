@@ -1,3 +1,5 @@
+import 'package:discount_machine/components/deal_card.dart';
+import 'package:discount_machine/model/deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
 
@@ -23,7 +25,8 @@ class MyApp extends StatelessWidget {
         // "hot reload" (press "r" in the console where you ran "flutter run",
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
+//        primarySwatch: Colors.primaries[new Random().nextInt(Colors.primaries.length)],
+        primarySwatch: Colors.deepOrange,
       ),
       home: new MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -51,6 +54,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  var deal = new Deal();
+
+  _MyHomePageState() {
+    deal.title = "My Super Amazing Deal that you cannot lose because you will have troubles";
+    deal.price = 15.0;
+    deal.regularPrice = 20.0;
+    deal.imageUrl = "https://placeimg.com/500/500/tech";
+    deal.merchant = "SuperMerchant";
+    deal.timestamp = new DateTime.now().subtract(new Duration(minutes: 5)).millisecondsSinceEpoch;
+    deal.url = "http://my.super.deal.com";
+    deal.likes = 10;
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -77,34 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: new Text(widget.title),
       ),
       body: new Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: new ListView.builder(itemBuilder: (context, index) => new DealCard(deal))),
       floatingActionButton: new FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
