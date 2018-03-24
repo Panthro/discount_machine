@@ -1,26 +1,34 @@
+import 'dart:math';
+
 import 'package:discount_machine/components/deal_card.dart';
 import 'package:discount_machine/model/deal.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show createHttpClient;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart' as http;
+import 'package:mockito/mockito.dart';
+
+import '../mocks/mock_deal.dart';
+import '../mocks/mock_firebase.dart';
+import '../test_utils.dart';
 
 void main() {
   setUpAll(() {
-    createHttpClient = createMockImageHttpClient;
+    setupMockImageHttpClient();
   });
   Deal deal;
+  DataSnapshot mockDataSnapshot;
+  Map<String, dynamic> mockValues;
 
   setUp(() {
-    deal = new Deal();
-    deal.url = "http://my.deal.com/super/mega/deal";
-    deal.title = "My Deal";
-    deal.imageUrl = "https://picsum.photos/500";
-    deal.price = 10.0;
-    deal.regularPrice = 20.0;
-    deal.merchant = "MyStore";
-    deal.timestamp = new DateTime.now().millisecondsSinceEpoch;
+    mockDataSnapshot = new MockDataSnapshot();
+
+    mockValues = newDealMockValues();
+
+    when(mockDataSnapshot.key).thenAnswer((_) => new Random().nextInt(99999).toString());
+    when(mockDataSnapshot.value).thenReturn(mockValues);
+
+    deal = new Deal()
+      ..updateFromSnapshot(mockDataSnapshot);
   });
 
   group("Visual elements", () {
@@ -99,79 +107,54 @@ void main() {
       expect(finder, findsOneWidget);
     });
   });
-}
 
-// Returns a mock HTTP client that responds with an image to all requests.
-ValueGetter<http.Client> createMockImageHttpClient = () {
-  return new http.MockClient((http.BaseRequest request) {
-    return new Future<http.Response>.value(
-        new http.Response.bytes(_transparentImage, 200, request: request));
+  group('Interactions', () {
+    testWidgets('Should call onLike when like is pressed', (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      var called = false;
+      var onLike = (deal) => called = true;
+
+      await tester.pumpWidget(new MaterialApp(
+          home: new DealCard(
+            deal,
+            onLike: onLike,
+          )));
+
+      await tester.tap(find.byIcon(Icons.thumb_up));
+
+      expect(called, isTrue);
+    });
+
+    testWidgets('Should call onFlag when flag is pressed', (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      var called = false;
+      var onFlag = (deal) => called = true;
+
+      await tester.pumpWidget(new MaterialApp(
+          home: new DealCard(
+            deal,
+            onFlag: onFlag,
+          )));
+
+      await tester.tap(find.byIcon(Icons.flag));
+
+      expect(called, isTrue);
+    });
+
+    testWidgets('Should call onComment when flag is pressed', (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      var called = false;
+      var onComment = (deal) => called = true;
+
+      await tester.pumpWidget(new MaterialApp(
+          home: new DealCard(
+            deal,
+            onComment: onComment,
+          )));
+
+      await tester.tap(find.byIcon(Icons.comment));
+
+      expect(called, isTrue);
+    });
   });
-};
-
-const List<int> _transparentImage = const <int>[
-  0x89,
-  0x50,
-  0x4E,
-  0x47,
-  0x0D,
-  0x0A,
-  0x1A,
-  0x0A,
-  0x00,
-  0x00,
-  0x00,
-  0x0D,
-  0x49,
-  0x48,
-  0x44,
-  0x52,
-  0x00,
-  0x00,
-  0x00,
-  0x01,
-  0x00,
-  0x00,
-  0x00,
-  0x01,
-  0x08,
-  0x06,
-  0x00,
-  0x00,
-  0x00,
-  0x1F,
-  0x15,
-  0xC4,
-  0x89,
-  0x00,
-  0x00,
-  0x00,
-  0x0A,
-  0x49,
-  0x44,
-  0x41,
-  0x54,
-  0x78,
-  0x9C,
-  0x63,
-  0x00,
-  0x01,
-  0x00,
-  0x00,
-  0x05,
-  0x00,
-  0x01,
-  0x0D,
-  0x0A,
-  0x2D,
-  0xB4,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x49,
-  0x45,
-  0x4E,
-  0x44,
-  0xAE,
-];
+}

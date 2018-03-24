@@ -1,25 +1,37 @@
+import 'package:discount_machine/model/base_firebase_entity.dart';
 import 'package:timeago/timeago.dart';
 
-class Deal {
-  String title;
+class Deal extends BaseFirebaseEntity {
+  String get title => getValue('title');
 
-  String imageUrl;
+  set title(String title) => setValue('title', title);
 
-  double price;
+  String get imageUrl => getValue('imageUrl');
 
-  String merchant;
+  set imageUrl(String imageUrl) => setValue('imageUrl', imageUrl);
 
-  int timestamp;
+  num get price => getValue('price');
 
-  double regularPrice;
+  set price(num price) => setValue('price', price);
 
-  String url;
+  String get merchant => getValue('merchant');
 
-  int likes;
+  set merchant(String merchant) => setValue('merchant', merchant);
+
+  num get regularPrice => getValue('regularPrice');
+
+  set regularPrice(num regularPrice) => setValue('regularPrice', regularPrice);
+
+  String get url => getValue('url');
+
+  set url(String url) => setValue('url', url);
+
+  int get likes => getMetric('likes');
 
   String get timeAgo => defaultTimeAgo.format(new DateTime.fromMillisecondsSinceEpoch(timestamp));
 
-  int get discountPercentage => ((1 - (price / regularPrice)) * 100).floor();
+  int get discountPercentage =>
+      price != null && regularPrice != null ? ((1 - (price / regularPrice)) * 100).floor() : null;
 
-  String get discountPercentageString => "$discountPercentage%";
+  String get discountPercentageString => discountPercentage != null ? "$discountPercentage%" : '';
 }

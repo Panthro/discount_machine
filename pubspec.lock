@@ -92,6 +92,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.6"
+  firebase_core:
+    dependency: transitive
+    description:
+      name: firebase_core
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
+  firebase_database:
+    dependency: "direct main"
+    description:
+      name: firebase_database
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.6"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -227,7 +241,7 @@ packages:
     source: hosted
     version: "0.9.6"
   mockito:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mockito
       url: "https://pub.dartlang.org"

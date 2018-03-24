@@ -11,6 +11,10 @@ dependencies:
   timeago: ^1.2.1
   flutter_flux: ^4.0.1
   logging: ^0.11.3
+  # firebase dependencies
+  firebase_database: 0.3.6
+  mockito : ^2.2.3
+
 
 dev_dependencies:
   flutter_test:
