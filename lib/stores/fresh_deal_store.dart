@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:discount_machine/model/deal.dart';
-import 'package:discount_machine/stores/deal_store.dart';
+import 'package:discount_machine/services/deal_service.dart';
 import 'package:discount_machine/stores/logging_store.dart';
 
 class FreshDealStore extends LoggingStore {
+  static DealService dealService = new DealService();
   static const PAGE_SIZE = 10;
 
-  var dealsReference = DealStore.dealService.databaseReference;
+  var dealsReference = dealService.databaseReference;
 
   List<Deal> freshDeals = [];
 

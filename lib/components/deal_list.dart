@@ -19,8 +19,6 @@ class DealList extends StatefulWidget {
   final VoidCallback onLoadMore;
   final int pageThreshold;
 
-  final ScrollController _scrollController = new ScrollController();
-
   DealList(this.deals,
       {this.onRefresh,
       this.onLoadMore,
@@ -37,6 +35,7 @@ class DealList extends StatefulWidget {
 
 class DealListState extends State<DealList> {
   final List<Deal> deals;
+  final ScrollController _scrollController = new ScrollController();
   bool _loadingMore = false;
 
   DealListState(this.deals);
@@ -44,7 +43,7 @@ class DealListState extends State<DealList> {
   void _loadMore() {
     if (this.widget.onLoadMore != null && !_loadingMore) {
       _loadingMore = true;
-      new Future(() {
+      new Future(() async {
         widget.logger.fine('Loading more deals');
         widget.logger.fine('Last deal ${deals.last}');
         widget.onLoadMore();
@@ -55,12 +54,13 @@ class DealListState extends State<DealList> {
   @override
   Widget build(BuildContext context) {
     Widget list = new ListView.builder(
-        controller: widget._scrollController,
+        controller: _scrollController,
         itemCount: deals.length,
         itemBuilder: (context, index) {
-          if (!_loadingMore &&
-              index + widget.pageThreshold > deals.length &&
-              widget._scrollController.offset != widget._scrollController.initialScrollOffset) {
+          widget.logger.finest('Loading deal $index');
+          if (!_loadingMore && index + widget.pageThreshold > deals.length
+              && _scrollController.offset != _scrollController.initialScrollOffset
+          ) {
             _loadMore();
           }
 
